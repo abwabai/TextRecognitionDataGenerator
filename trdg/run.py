@@ -11,6 +11,9 @@ import string
 import sys
 from multiprocessing import Pool
 
+import arabic_reshaper
+from bidi.algorithm import get_display
+
 from tqdm import tqdm
 
 from trdg.data_generator import FakeTextDataGenerator
@@ -478,6 +481,9 @@ def main():
         ) as f:
             for i in range(string_count):
                 file_name = str(i) + "." + args.extension
+
+                if args.language == "ar":
+                    strings[i] = get_display(arabic_reshaper.reshape(''.join(reversed(strings[i]))))
                 label = strings[i]
                 if args.space_width == 0:
                     label = label.replace(" ", "")

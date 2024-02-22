@@ -101,10 +101,11 @@ def _generate_horizontal_text(
         for p in splitted_text
     ]
     text_width = sum(piece_widths)
+    text_width = get_text_width(image_font, text)
     if not word_split:
         text_width += character_spacing * (len(text) - 1)
 
-    text_height = max([get_text_height(image_font, p) for p in splitted_text])
+    text_height = get_text_height(image_font, text)
 
     txt_img = Image.new("RGBA", (text_width, text_height), (0, 0, 0, 0))
     txt_mask = Image.new("RGB", (text_width, text_height), (0, 0, 0))
@@ -134,20 +135,23 @@ def _generate_horizontal_text(
     for i, p in enumerate(splitted_text):
         txt_img_draw.text(
             (sum(piece_widths[0:i]) + i * character_spacing * int(not word_split), 0),
-            p,
+            splitted_text,
             fill=fill,
             font=image_font,
             stroke_width=stroke_width,
             stroke_fill=stroke_fill,
+            direction="rtl"
         )
         txt_mask_draw.text(
             (sum(piece_widths[0:i]) + i * character_spacing * int(not word_split), 0),
-            p,
+            splitted_text,
             fill=((i + 1) // (255 * 255), (i + 1) // 255, (i + 1) % 255),
             font=image_font,
             stroke_width=stroke_width,
             stroke_fill=stroke_fill,
+            direction="rtl"
         )
+        break
 
     if fit:
         return txt_img.crop(txt_img.getbbox()), txt_mask.crop(txt_img.getbbox())

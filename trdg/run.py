@@ -2,6 +2,7 @@ import argparse
 import errno
 import os
 import sys
+import unicodedata
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -417,14 +418,8 @@ def main():
         )
 
     if args.language == "ar":
-        from arabic_reshaper import ArabicReshaper
-        from bidi.algorithm import get_display
-
-        arabic_reshaper = ArabicReshaper()
         strings = [
-            " ".join(
-                [get_display(arabic_reshaper.reshape(w)) for w in s.split(" ")[::-1]]
-            )
+            unicodedata.normalize("NFKD", s)
             for s in strings
         ]
     if args.case == "upper":
